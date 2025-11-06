@@ -1,24 +1,7 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Mail, Check } from "lucide-react";
+import { Instagram, Youtube } from "lucide-react";
+import { FaTiktok } from "react-icons/fa";
 
 export const Newsletter = () => {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    
-    // Here you would integrate with newsletter service
-    setSubscribed(true);
-    setTimeout(() => {
-      setEmail("");
-      setSubscribed(false);
-    }, 3000);
-  };
-
   return (
     <section className="bg-primary text-primary-foreground py-20 relative overflow-hidden">
       {/* Pattern Background */}
@@ -30,46 +13,47 @@ export const Newsletter = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 border border-accent/30 mb-6">
-            <Mail className="h-4 w-4 text-accent" />
-            <span className="text-sm font-medium text-accent">Newsletter</span>
-          </div>
-
           <h2 className="font-display text-4xl md:text-5xl font-black mb-4">
-            Mantente Actualizado
+            Síguenos en Redes
           </h2>
           <p className="text-primary-foreground/70 text-lg mb-8">
-            Recibe las últimas novedades en IA directamente en tu inbox
+            Únete a nuestra comunidad y mantente al día con las últimas novedades en IA
           </p>
 
-          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <Input
-              type="email"
-              placeholder="tu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 h-14 rounded-full bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50"
-              required
-            />
-            <Button
-              type="submit"
-              size="lg"
-              className="rounded-full px-8 bg-accent hover:bg-accent/90 text-accent-foreground"
-              disabled={subscribed}
+          <div className="flex justify-center gap-6">
+            <a
+              href="https://instagram.com/cioai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center gap-3 p-6 rounded-2xl bg-accent/10 hover:bg-accent/20 border border-accent/20 hover:border-accent/40 transition-all duration-300"
             >
-              {subscribed ? (
-                <>
-                  <Check className="mr-2 h-4 w-4" />
-                  ¡Suscrito!
-                </>
-              ) : (
-                "Suscribirse"
-              )}
-            </Button>
-          </form>
+              <Instagram className="h-8 w-8 text-accent group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium text-primary-foreground">Instagram</span>
+            </a>
 
-          <p className="text-sm text-primary-foreground/50 mt-4">
-            Sin spam. Cancela cuando quieras.
+            <a
+              href="https://tiktok.com/@cioai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center gap-3 p-6 rounded-2xl bg-accent/10 hover:bg-accent/20 border border-accent/20 hover:border-accent/40 transition-all duration-300"
+            >
+              <FaTiktok className="h-8 w-8 text-accent group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium text-primary-foreground">TikTok</span>
+            </a>
+
+            <a
+              href="https://youtube.com/@cioai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center gap-3 p-6 rounded-2xl bg-accent/10 hover:bg-accent/20 border border-accent/20 hover:border-accent/40 transition-all duration-300"
+            >
+              <Youtube className="h-8 w-8 text-accent group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium text-primary-foreground">YouTube</span>
+            </a>
+          </div>
+
+          <p className="text-sm text-primary-foreground/50 mt-8">
+            Contenido exclusivo, tutoriales y actualizaciones diarias
           </p>
         </div>
       </div>
