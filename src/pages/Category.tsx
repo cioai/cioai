@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { ArticleCard } from "@/components/ArticleCard";
@@ -6,79 +6,89 @@ import { Footer } from "@/components/Footer";
 import { AIChat } from "@/components/AIChat";
 import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Category = () => {
   const { slug } = useParams();
   const [chatOpen, setChatOpen] = useState(false);
+  const [category, setCategory] = useState<any>(null);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data - En producción vendría de la base de datos
-  const categories = {
-    "sora-2": {
-      name: "Sora 2",
-      description: "Todo sobre la revolucionaria IA de generación de vídeo de OpenAI",
-      articles: [
-        {
-          id: "1",
-          title: "Sora 2 - OpenAI | Todo lo Nuevo en 2025",
-          slug: "sora-2-openai-novedades-2025",
-          excerpt: "Descubre todas las novedades de Sora 2, la revolucionaria IA de generación de video de OpenAI que está transformando la creación de contenido en 2025.",
-          featured_image: "/src/assets/sora-2.jpg",
-          category: { name: "Sora 2", slug: "sora-2" },
-          reading_time: 8,
-          published_at: new Date().toISOString(),
-        },
-        {
-          id: "2",
-          title: "¿Cómo acceder gratis a Sora 2?",
-          slug: "como-acceder-gratis-sora-2",
-          excerpt: "Guía completa para acceder a Sora 2 sin pagar. Descubre las opciones gratuitas, limitaciones y requisitos para usar esta poderosa herramienta de IA.",
-          featured_image: "/src/assets/sora-2.jpg",
-          category: { name: "Sora 2", slug: "sora-2" },
-          reading_time: 6,
-          published_at: new Date().toISOString(),
-        },
-      ],
-    },
-    "veo-3-1": {
-      name: "Veo 3.1",
-      description: "Análisis completo de la herramienta de Google DeepMind",
-      articles: [
-        {
-          id: "4",
-          title: "Veo 3.1 - Google DeepMind | Guía Completa 2025",
-          slug: "veo-3-1-google-deepmind-guia-completa",
-          excerpt: "Todo lo que necesitas saber sobre Veo 3.1, la revolucionaria herramienta de generación de vídeo con IA de Google DeepMind.",
-          featured_image: "/src/assets/veo-3-1.jpg",
-          category: { name: "Veo 3.1", slug: "veo-3-1" },
-          reading_time: 7,
-          published_at: new Date().toISOString(),
-        },
-      ],
-    },
-    comparativas: {
-      name: "Comparativas",
-      description: "Análisis detallados comparando las mejores herramientas de IA",
-      articles: [
-        {
-          id: "3",
-          title: "Sora 2 vs Veo 3.1",
-          slug: "sora-2-vs-veo-3-1-comparativa",
-          excerpt: "Comparativa exhaustiva entre las dos mejores IAs de generación de video. Descubre cuál se adapta mejor a tus necesidades creativas en 2025.",
-          featured_image: "/src/assets/comparison.jpg",
-          category: { name: "Comparativas", slug: "comparativas" },
-          reading_time: 9,
-          published_at: new Date().toISOString(),
-        },
-      ],
-    },
-    tutoriales: {
-      name: "Tutoriales",
-      description: "Guías paso a paso para dominar las herramientas de IA",
-      articles: [],
-    },
-  };
+  useEffect(() => {
+    const fetchCategoryAndArticles = async () => {
+      if (!slug) return;
 
-  const category = categories[slug as keyof typeof categories] || categories["sora-2"];
+      // Fetch category
+      const { data: categoryData, error: categoryError } = await supabase
+        .from("categories")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (!categoryError && categoryData) {
+        setCategory(categoryData);
+
+        // Fetch articles for this category
+        const { data: articlesData, error: articlesError } = await supabase
+          .from("articles")
+          .select(`
+            *,
+            category:categories(name, slug)
+          `)
+          .eq("category_id", categoryData.id)
+          .order("published_at", { ascending: false });
+
+        if (!articlesError && articlesData) {
+          setArticles(articlesData);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchCategoryAndArticles();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header onOpenChat={() => setChatOpen(true)} />
+        <main className={cn("pt-32 pb-20 transition-all duration-300", chatOpen && "md:mr-[400px]")}>
+          <div className="container mx-auto px-6">
+            <div className="animate-pulse">
+              <div className="h-12 bg-secondary rounded w-1/3 mb-4" />
+              <div className="h-6 bg-secondary rounded w-1/2 mb-16" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[1, 2, 3].map((i) => (
+                  <div key={i}>
+                    <div className="aspect-video bg-secondary rounded-2xl mb-4" />
+                    <div className="h-6 bg-secondary rounded w-3/4 mb-2" />
+                    <div className="h-4 bg-secondary rounded w-full" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!category) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header onOpenChat={() => setChatOpen(true)} />
+        <main className="pt-32 pb-20">
+          <div className="container mx-auto px-6 text-center">
+            <h1 className="text-4xl font-bold mb-4">Categoría no encontrada</h1>
+            <Link to="/" className="text-accent hover:underline">
+              Volver al inicio
+            </Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -104,9 +114,9 @@ const Category = () => {
           </div>
 
           {/* Articles Grid */}
-          {category.articles.length > 0 ? (
+          {articles.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {category.articles.map((article, index) => (
+              {articles.map((article, index) => (
                 <div
                   key={article.id}
                   className="animate-fade-in"
@@ -117,7 +127,7 @@ const Category = () => {
                     excerpt={article.excerpt}
                     slug={article.slug}
                     featuredImage={article.featured_image || undefined}
-                    categoryName={article.category.name}
+                    categoryName={article.category?.name || category.name}
                     readingTime={article.reading_time}
                     publishedAt={article.published_at}
                   />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { ArticleCard } from "@/components/ArticleCard";
@@ -10,43 +10,32 @@ import { Footer } from "@/components/Footer";
 import { AIChat } from "@/components/AIChat";
 import { Video, Sparkles, Wand2, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [chatOpen, setChatOpen] = useState(false);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock articles for demo
-  const mockArticles = [
-    {
-      id: "1",
-      title: "Sora 2 - OpenAI | Todo lo Nuevo en 2025",
-      slug: "sora-2-openai-novedades-2025",
-      excerpt: "Descubre todas las novedades de Sora 2, la revolucionaria IA de generación de video de OpenAI que está transformando la creación de contenido en 2025.",
-      featured_image: "/src/assets/sora-2.jpg",
-      category: { name: "Sora 2", slug: "sora-2" },
-      reading_time: 8,
-      published_at: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      title: "¿Cómo acceder gratis a Sora 2?",
-      slug: "como-acceder-gratis-sora-2",
-      excerpt: "Guía completa para acceder a Sora 2 sin pagar. Descubre las opciones gratuitas, limitaciones y requisitos para usar esta poderosa herramienta de IA.",
-      featured_image: "/src/assets/sora-2.jpg",
-      category: { name: "Sora 2", slug: "sora-2" },
-      reading_time: 6,
-      published_at: new Date().toISOString(),
-    },
-    {
-      id: "3",
-      title: "Sora 2 vs Veo 3.1",
-      slug: "sora-2-vs-veo-3-1-comparativa",
-      excerpt: "Comparativa exhaustiva entre las dos mejores IAs de generación de video. Descubre cuál se adapta mejor a tus necesidades creativas en 2025.",
-      featured_image: "/src/assets/comparison.jpg",
-      category: { name: "Comparativas", slug: "comparativas" },
-      reading_time: 9,
-      published_at: new Date().toISOString(),
-    },
-  ];
+  useEffect(() => {
+    const fetchArticles = async () => {
+      const { data, error } = await supabase
+        .from("articles")
+        .select(`
+          *,
+          category:categories(name, slug)
+        `)
+        .order("published_at", { ascending: false })
+        .limit(6);
+
+      if (!error && data) {
+        setArticles(data);
+      }
+      setLoading(false);
+    };
+
+    fetchArticles();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -64,25 +53,44 @@ const Index = () => {
             <div className="h-px flex-1 bg-border" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {mockArticles.map((article, index) => (
-              <div
-                key={article.id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <ArticleCard
-                  title={article.title}
-                  excerpt={article.excerpt}
-                  slug={article.slug}
-                  featuredImage={article.featured_image || undefined}
-                  categoryName={article.category.name}
-                  readingTime={article.reading_time}
-                  publishedAt={article.published_at}
-                />
-              </div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-video bg-secondary rounded-2xl mb-4" />
+                  <div className="h-6 bg-secondary rounded w-3/4 mb-2" />
+                  <div className="h-4 bg-secondary rounded w-full mb-2" />
+                  <div className="h-4 bg-secondary rounded w-5/6" />
+                </div>
+              ))}
+            </div>
+          ) : articles.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {articles.map((article, index) => (
+                <div
+                  key={article.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <ArticleCard
+                    title={article.title}
+                    excerpt={article.excerpt}
+                    slug={article.slug}
+                    featuredImage={article.featured_image || undefined}
+                    categoryName={article.category?.name || "Sin categoría"}
+                    readingTime={article.reading_time}
+                    publishedAt={article.published_at}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-xl text-muted-foreground">
+                Aún no hay artículos publicados. ¡Vuelve pronto!
+              </p>
+            </div>
+          )}
         </section>
 
         {/* Comparisons Slider */}
