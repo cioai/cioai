@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, Sparkles, Sun, Moon, Menu, X } from "lucide-react";
+import { Search, Sparkles, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
@@ -12,7 +12,6 @@ interface HeaderProps {
 export const Header = ({ onOpenChat }: HeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,14 +20,6 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
 
   const navItems = [
     { name: "Inicio", href: "/" },
@@ -70,20 +61,6 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
             className="hidden md:flex rounded-full"
           >
             <Search className="h-5 w-5" />
-          </Button>
-
-          {/* Dark Mode Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setDarkMode(!darkMode)}
-            className="rounded-full"
-          >
-            {darkMode ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
           </Button>
 
           {/* AI Assistant Button */}

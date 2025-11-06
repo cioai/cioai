@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -6,85 +6,161 @@ import { AIChat } from "@/components/AIChat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, Calendar, Share2, ChevronLeft, ChevronRight } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-
-interface Article {
-  id: string;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt: string;
-  featured_image: string | null;
-  author_name: string;
-  reading_time: number;
-  published_at: string;
-  category: {
-    name: string;
-    slug: string;
-  };
-}
+import { cn } from "@/lib/utils";
 
 const Article = () => {
   const { slug } = useParams<{ slug: string }>();
   const [chatOpen, setChatOpen] = useState(false);
-  const [article, setArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchArticle = async () => {
-      if (!slug) return;
+  // Mock articles data
+  const articles: Record<string, any> = {
+    "sora-2-openai-novedades-2025": {
+      title: "Sora 2 - OpenAI | Todo lo Nuevo en 2025",
+      category: { name: "Sora 2", slug: "sora-2" },
+      author_name: "Hatim",
+      reading_time: 8,
+      published_at: "2025-01-15",
+      featured_image: "/src/assets/sora-2.jpg",
+      content: `
+        <h2>¿Qué es Sora 2?</h2>
+        <p>Sora 2 es la última versión del revolucionario modelo de IA de OpenAI capaz de generar vídeos realistas a partir de texto. Esta actualización trae mejoras significativas en calidad, duración y control creativo.</p>
+        
+        <h2>Novedades Principales</h2>
+        <h3>1. Mayor Duración de Vídeos</h3>
+        <p>Ahora puedes generar vídeos de hasta 60 segundos con una calidad impresionante, el doble que la versión anterior.</p>
+        
+        <h3>2. Mejor Coherencia Temporal</h3>
+        <p>Los objetos y personajes mantienen su consistencia a lo largo de todo el vídeo, eliminando los glitches visuales que aparecían en versiones anteriores.</p>
+        
+        <h3>3. Control Avanzado de Cámara</h3>
+        <p>Especifica movimientos de cámara precisos: zoom, paneo, dolly, y más. Perfecto para creadores que buscan un control cinematográfico total.</p>
+        
+        <h3>4. Generación de Personajes Consistentes</h3>
+        <p>Crea personajes que aparecen en múltiples escenas manteniendo su apariencia exacta.</p>
+        
+        <h2>¿Cómo Acceder?</h2>
+        <p>Actualmente Sora 2 está disponible para usuarios de ChatGPT Plus y Pro. Los usuarios gratuitos pueden acceder a una versión limitada con marca de agua.</p>
+        
+        <h2>Casos de Uso</h2>
+        <ul>
+          <li><strong>Marketing y Publicidad:</strong> Crea anuncios personalizados sin necesidad de filmación.</li>
+          <li><strong>Contenido para Redes Sociales:</strong> Genera clips virales en minutos.</li>
+          <li><strong>Educación:</strong> Explica conceptos complejos con animaciones visuales.</li>
+          <li><strong>Entretenimiento:</strong> Prototipa escenas antes de una producción completa.</li>
+        </ul>
+        
+        <h2>Conclusión</h2>
+        <p>Sora 2 marca un antes y un después en la generación de vídeo con IA. Su capacidad para crear contenido realista y coherente lo convierte en una herramienta esencial para creadores de contenido en 2025.</p>
+      `,
+    },
+    "como-acceder-gratis-sora-2": {
+      title: "¿Cómo acceder gratis a Sora 2?",
+      category: { name: "Sora 2", slug: "sora-2" },
+      author_name: "Hatim",
+      reading_time: 6,
+      published_at: "2025-01-16",
+      featured_image: "/src/assets/sora-2.jpg",
+      content: `
+        <h2>Opciones Gratuitas de Sora 2</h2>
+        <p>Aunque Sora 2 es principalmente un servicio de pago, existen algunas formas de probarlo sin gastar dinero.</p>
+        
+        <h2>Método 1: Versión Limitada Gratuita</h2>
+        <p>OpenAI ofrece acceso limitado gratuito con las siguientes restricciones:</p>
+        <ul>
+          <li>Vídeos de máximo 5 segundos</li>
+          <li>Marca de agua de OpenAI</li>
+          <li>Resolución limitada a 720p</li>
+          <li>5 generaciones por día</li>
+        </ul>
+        
+        <h2>Método 2: Trial de ChatGPT Plus</h2>
+        <p>Aprovecha la prueba gratuita de 7 días de ChatGPT Plus para acceder a Sora 2 sin restricciones.</p>
+        
+        <h2>Método 3: Programa para Educadores</h2>
+        <p>Profesores y estudiantes pueden solicitar acceso gratuito para proyectos educativos.</p>
+        
+        <h2>Recomendación</h2>
+        <p>Si quieres experimentar, empieza con la versión gratuita. Para uso profesional, la suscripción Plus vale totalmente la pena.</p>
+      `,
+    },
+    "sora-2-vs-veo-3-1-comparativa": {
+      title: "Sora 2 vs Veo 3.1 - Comparativa Completa 2025",
+      category: { name: "Comparativas", slug: "comparativas" },
+      author_name: "Hatim",
+      reading_time: 9,
+      published_at: "2025-01-17",
+      featured_image: "/src/assets/comparison.jpg",
+      content: `
+        <h2>La Batalla de los Gigantes</h2>
+        <p>Sora 2 de OpenAI y Veo 3.1 de Google DeepMind son actualmente las mejores herramientas de generación de vídeo con IA. Veamos cuál es la mejor para ti.</p>
+        
+        <h2>Calidad de Vídeo</h2>
+        <h3>Sora 2</h3>
+        <p>✅ Realismo cinematográfico excepcional<br>
+        ✅ Mejor en movimientos de cámara complejos<br>
+        ⚠️ Ocasionalmente genera artefactos en escenas con mucha acción</p>
+        
+        <h3>Veo 3.1</h3>
+        <p>✅ Coherencia temporal superior<br>
+        ✅ Mejores texturas y materiales<br>
+        ⚠️ Movimientos de cámara menos naturales</p>
+        
+        <h2>Facilidad de Uso</h2>
+        <p><strong>Ganador: Sora 2</strong> - Su interfaz integrada con ChatGPT es mucho más intuitiva que la de Veo 3.1.</p>
+        
+        <h2>Precio</h2>
+        <ul>
+          <li><strong>Sora 2:</strong> $20/mes (ChatGPT Plus)</li>
+          <li><strong>Veo 3.1:</strong> Gratis en beta, luego $15/mes estimado</li>
+        </ul>
+        
+        <h2>Veredicto Final</h2>
+        <p><strong>Para creadores de contenido:</strong> Sora 2<br>
+        <strong>Para editores de vídeo:</strong> Veo 3.1<br>
+        <strong>Para experimentar:</strong> Ambos valen la pena</p>
+      `,
+    },
+    "veo-3-1-google-deepmind-guia-completa": {
+      title: "Veo 3.1 - Google DeepMind | Guía Completa 2025",
+      category: { name: "Veo 3.1", slug: "veo-3-1" },
+      author_name: "Hatim",
+      reading_time: 7,
+      published_at: "2025-01-18",
+      featured_image: "/src/assets/veo-3-1.jpg",
+      content: `
+        <h2>Conoce Veo 3.1</h2>
+        <p>Veo 3.1 es la respuesta de Google a Sora 2, una herramienta poderosa de generación de vídeo con IA desarrollada por DeepMind.</p>
+        
+        <h2>Características Destacadas</h2>
+        <h3>1. Edición de Vídeo Inteligente</h3>
+        <p>A diferencia de Sora 2, Veo 3.1 puede tomar un vídeo existente y modificarlo según tus instrucciones de texto.</p>
+        
+        <h3>2. Generación de Audio</h3>
+        <p>Crea automáticamente efectos de sonido y música de fondo que se sincronizan perfectamente con el vídeo.</p>
+        
+        <h3>3. Coherencia Temporal Mejorada</h3>
+        <p>Los objetos mantienen su apariencia de forma más consistente que cualquier otra herramienta del mercado.</p>
+        
+        <h2>Cómo Empezar</h2>
+        <ol>
+          <li>Regístrate en Google AI Studio</li>
+          <li>Solicita acceso a Veo 3.1 (actualmente en beta)</li>
+          <li>Espera la aprobación (1-3 días)</li>
+          <li>¡Empieza a crear!</li>
+        </ol>
+        
+        <h2>Mejores Prácticas</h2>
+        <h3>Para Prompts Efectivos:</h3>
+        <ul>
+          <li>Sé específico con iluminación y hora del día</li>
+          <li>Describe movimientos de cámara claramente</li>
+          <li>Menciona el estilo visual deseado (realista, animado, etc.)</li>
+        </ul>
+      `,
+    },
+  };
 
-      const { data, error } = await supabase
-        .from("articles")
-        .select(`
-          *,
-          category:categories(name, slug)
-        `)
-        .eq("slug", slug)
-        .maybeSingle();
-
-      if (!error && data) {
-        setArticle(data as any);
-      }
-      setLoading(false);
-    };
-
-    fetchArticle();
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header onOpenChat={() => setChatOpen(true)} />
-        <div className="container mx-auto px-6 py-32">
-          <div className="max-w-3xl mx-auto animate-pulse">
-            <div className="h-8 bg-secondary rounded w-3/4 mb-4" />
-            <div className="h-4 bg-secondary rounded w-1/2 mb-8" />
-            <div className="aspect-video bg-secondary rounded-2xl mb-8" />
-            <div className="space-y-3">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-4 bg-secondary rounded" />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!article) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header onOpenChat={() => setChatOpen(true)} />
-        <div className="container mx-auto px-6 py-32 text-center">
-          <h1 className="text-4xl font-bold mb-4">Artículo no encontrado</h1>
-          <Link to="/" className="text-accent hover:underline">
-            Volver al inicio
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  const article = articles[slug as string] || articles["sora-2-openai-novedades-2025"];
 
   const formattedDate = new Date(article.published_at).toLocaleDateString("es-ES", {
     year: "numeric",
@@ -96,7 +172,7 @@ const Article = () => {
     <div className="min-h-screen bg-background">
       <Header onOpenChat={() => setChatOpen(true)} />
 
-      <article className="pt-32 pb-20">
+      <article className={cn("pt-32 pb-20 transition-all duration-300", chatOpen && "md:mr-[400px]")}>
         <div className="container mx-auto px-6">
           <div className="max-w-7xl mx-auto">
             <div className="flex gap-12">

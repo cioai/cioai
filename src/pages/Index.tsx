@@ -9,6 +9,7 @@ import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
 import { AIChat } from "@/components/AIChat";
 import { Video, Sparkles, Wand2, BookOpen } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const Index = () => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -51,7 +52,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header onOpenChat={() => setChatOpen(true)} />
       
-      <main>
+      <main className={cn("transition-all duration-300", chatOpen && "md:mr-[400px]")}>
         <Hero />
 
         {/* Latest Articles */}
