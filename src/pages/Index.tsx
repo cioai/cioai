@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { ArticleCard } from "@/components/ArticleCard";
+import { CategoryCard } from "@/components/CategoryCard";
+import { ComparisonCard } from "@/components/ComparisonCard";
+import { Stats } from "@/components/Stats";
 import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
 import { AIChat } from "@/components/AIChat";
 import { supabase } from "@/integrations/supabase/client";
+import { Video, Sparkles, Wand2, BookOpen } from "lucide-react";
 
 interface Article {
   id: string;
@@ -95,8 +99,44 @@ const Index = () => {
           )}
         </section>
 
-        {/* Categories */}
+        {/* Comparisons Slider */}
         <section className="py-20 bg-secondary/30">
+          <div className="container mx-auto px-6">
+            <div className="flex items-center gap-4 mb-12">
+              <span className="text-sm font-bold text-accent tracking-[0.2em]">
+                COMPARATIVAS DESTACADAS
+              </span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+
+            <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+              <ComparisonCard
+                title="Batalla de Titanes 2025"
+                subtitle="¿Cuál genera mejor vídeo este año?"
+                slug="sora-2-vs-veo-3-1-comparativa"
+                tool1={{ name: "Sora 2", logo: "S2" }}
+                tool2={{ name: "Veo 3.1", logo: "V3" }}
+              />
+              <ComparisonCard
+                title="El Duelo de los Editores"
+                subtitle="Funciones de edición con IA comparadas"
+                slug="veo-3-1-vs-runway-gen-3"
+                tool1={{ name: "Veo 3.1", logo: "V3" }}
+                tool2={{ name: "Runway", logo: "RW" }}
+              />
+              <ComparisonCard
+                title="Acceso y Precio"
+                subtitle="¿Cuál ofrece mejor relación calidad-precio?"
+                slug="mejor-ia-calidad-precio"
+                tool1={{ name: "Sora 2", logo: "S2" }}
+                tool2={{ name: "Runway", logo: "RW" }}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Categories */}
+        <section className="py-20">
           <div className="container mx-auto px-6">
             <div className="flex items-center gap-4 mb-12">
               <span className="text-sm font-bold text-accent tracking-[0.2em]">
@@ -106,29 +146,41 @@ const Index = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { name: "Sora 2", slug: "sora-2", count: 5, icon: "🎬" },
-                { name: "Veo 3.1", slug: "veo-3-1", count: 3, icon: "🎥" },
-                { name: "Otras IAs", slug: "otras-ias", count: 4, icon: "✨" },
-                { name: "Guías Generales", slug: "guias-generales", count: 3, icon: "📚" },
-              ].map((cat) => (
-                <a
-                  key={cat.slug}
-                  href={`/categoria/${cat.slug}`}
-                  className="group p-8 bg-card border border-border rounded-2xl hover:border-accent hover:shadow-lg transition-all duration-300"
-                >
-                  <div className="text-4xl mb-4">{cat.icon}</div>
-                  <h3 className="font-display text-xl font-bold mb-2 group-hover:text-accent transition-colors">
-                    {cat.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {cat.count} artículos
-                  </p>
-                </a>
-              ))}
+              <CategoryCard
+                name="Sora 2"
+                slug="sora-2"
+                count={5}
+                icon={Video}
+                description="Todo sobre la IA de generación de vídeo de OpenAI"
+                gradient="from-primary/10 to-primary/5"
+              />
+              <CategoryCard
+                name="Veo 3.1"
+                slug="veo-3-1"
+                count={3}
+                icon={Sparkles}
+                description="Análisis completo de la herramienta de Google DeepMind"
+                gradient="from-accent/10 to-accent/5"
+              />
+              <CategoryCard
+                name="Otras IAs"
+                slug="otras-ias"
+                count={4}
+                icon={Wand2}
+                description="Runway, Higgsfield y más herramientas de vídeo"
+              />
+              <CategoryCard
+                name="Guías Generales"
+                slug="guias-generales"
+                count={3}
+                icon={BookOpen}
+                description="Comparativas y tutoriales para todos"
+              />
             </div>
           </div>
         </section>
+
+        <Stats />
 
         <Newsletter />
       </main>

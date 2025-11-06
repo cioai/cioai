@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, Sparkles, Sun, Moon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SearchDialog } from "@/components/SearchDialog";
+import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
@@ -13,7 +14,7 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [searchExpanded, setSearchExpanded] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,11 +49,7 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
     >
       <div className="container mx-auto h-full flex items-center justify-between px-6">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <span className="font-display text-2xl font-black tracking-tight">
-            Cio<span className="text-accent">AI</span>
-          </span>
-        </Link>
+        <Logo />
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
@@ -70,21 +67,14 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
         {/* Right Side Actions */}
         <div className="flex items-center gap-4">
           {/* Search */}
-          <div
-            className={cn(
-              "hidden md:flex items-center bg-secondary rounded-full transition-all duration-300",
-              searchExpanded ? "w-[320px]" : "w-[240px]"
-            )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSearchOpen(true)}
+            className="hidden md:flex rounded-full"
           >
-            <Search className="ml-4 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Buscar artículos..."
-              className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-              onFocus={() => setSearchExpanded(true)}
-              onBlur={() => setSearchExpanded(false)}
-            />
-          </div>
+            <Search className="h-5 w-5" />
+          </Button>
 
           {/* Dark Mode Toggle */}
           <Button
@@ -140,15 +130,20 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
               </Link>
             ))}
             <div className="pt-4 border-t">
-              <Input
-                type="search"
-                placeholder="Buscar artículos..."
-                className="w-full"
-              />
+              <Button
+                onClick={() => setSearchOpen(true)}
+                variant="outline"
+                className="w-full justify-start gap-2"
+              >
+                <Search className="h-4 w-4" />
+                Buscar artículos...
+              </Button>
             </div>
           </nav>
         </div>
       )}
+
+      <SearchDialog isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 };

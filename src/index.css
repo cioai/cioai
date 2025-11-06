@@ -92,6 +92,96 @@ All colors MUST be HSL.
   html {
     scroll-behavior: smooth;
   }
+
+  /* Article Content Styles */
+  .article-content {
+    @apply text-foreground/90 leading-relaxed;
+  }
+
+  .article-content h2 {
+    @apply text-3xl font-display font-bold mt-12 mb-6 border-l-4 border-accent pl-6 text-foreground;
+  }
+
+  .article-content h3 {
+    @apply text-2xl font-display font-semibold mt-8 mb-4 text-foreground;
+  }
+
+  .article-content h4 {
+    @apply text-xl font-semibold mt-6 mb-3 text-foreground;
+  }
+
+  .article-content p {
+    @apply mb-6 text-lg leading-relaxed;
+  }
+
+  .article-content ul,
+  .article-content ol {
+    @apply mb-6 pl-8 space-y-3;
+  }
+
+  .article-content ul {
+    @apply list-none;
+  }
+
+  .article-content ul li {
+    @apply relative pl-6 before:content-[''] before:absolute before:left-0 before:top-[0.6em] before:w-2 before:h-2 before:rounded-full before:bg-accent;
+  }
+
+  .article-content ol {
+    @apply list-decimal;
+  }
+
+  .article-content strong {
+    @apply font-semibold text-foreground;
+  }
+
+  .article-content em {
+    @apply italic text-muted-foreground;
+  }
+
+  .article-content a {
+    @apply text-accent hover:underline underline-offset-4 transition-colors;
+  }
+
+  .article-content code {
+    @apply px-2 py-1 bg-secondary rounded text-sm font-mono;
+  }
+
+  .article-content pre {
+    @apply p-6 bg-secondary rounded-xl overflow-x-auto mb-6 border-l-4 border-accent;
+  }
+
+  .article-content pre code {
+    @apply p-0 bg-transparent;
+  }
+
+  .article-content blockquote {
+    @apply border-l-4 border-accent pl-6 py-2 my-6 italic text-muted-foreground bg-accent/5 rounded-r-lg;
+  }
+
+  .article-content table {
+    @apply w-full border-collapse mb-6 overflow-hidden rounded-xl;
+  }
+
+  .article-content th {
+    @apply bg-primary text-primary-foreground px-6 py-4 text-left font-semibold;
+  }
+
+  .article-content td {
+    @apply border-t px-6 py-4;
+  }
+
+  .article-content tr:nth-child(even) td {
+    @apply bg-secondary/50;
+  }
+
+  .article-content img {
+    @apply rounded-2xl my-8 w-full;
+  }
+
+  .article-content hr {
+    @apply my-12 border-border;
+  }
 }
 
 @layer utilities {
@@ -105,6 +195,23 @@ All colors MUST be HSL.
 
   .animate-slide-up {
     animation: slide-up 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.4s ease-out forwards;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
   .glass {
@@ -135,5 +242,25 @@ All colors MUST be HSL.
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }

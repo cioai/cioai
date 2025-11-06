@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Instagram, Youtube } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 export const Footer = () => {
   const categories = [
@@ -22,11 +23,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* About */}
           <div>
-            <Link to="/" className="inline-block mb-4">
-              <span className="font-display text-2xl font-black">
-                Cio<span className="text-accent">AI</span>
-              </span>
-            </Link>
+            <Logo className="mb-4" />
             <p className="text-primary-foreground/70 text-sm">
               Comparativas, tutoriales y análisis actualizados sobre las mejores
               herramientas de IA para creadores de contenido.
