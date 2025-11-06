@@ -23,10 +23,9 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
 
   const navItems = [
     { name: "Inicio", href: "/" },
-    { name: "Sora 2", href: "/categoria/sora-2" },
-    { name: "Veo 3.1", href: "/categoria/veo-3-1" },
-    { name: "IA", href: "/categoria/otras-ias" },
-    { name: "Guías", href: "/categoria/guias-generales" },
+    { name: "Artículos", href: "/articulos" },
+    { name: "Tutoriales", href: "/categoria/tutoriales" },
+    { name: "Comparativas", href: "/categoria/comparativas" },
   ];
 
   return (
