@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import soraIcon from "@/assets/sora-icon.png";
+import veoIcon from "@/assets/veo-icon.png";
+import runwayIcon from "@/assets/runway-icon.png";
 
 interface CategoryCardProps {
   name: string;
@@ -10,6 +13,13 @@ interface CategoryCardProps {
   description?: string;
   gradient?: string;
 }
+
+const getCategoryIcon = (slug: string): string | null => {
+  if (slug.includes("sora")) return soraIcon;
+  if (slug.includes("veo")) return veoIcon;
+  if (slug.includes("runway") || slug.includes("otras-ia")) return runwayIcon;
+  return null;
+};
 
 export const CategoryCard = ({
   name,
@@ -36,8 +46,12 @@ export const CategoryCard = ({
       <div className="relative h-full p-8 flex flex-col justify-between">
         <div>
           {/* Icon */}
-          <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-            <Icon className="w-8 h-8 text-accent" />
+          <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 p-3">
+            {getCategoryIcon(slug) ? (
+              <img src={getCategoryIcon(slug)!} alt={name} className="w-full h-full object-contain" />
+            ) : (
+              <Icon className="w-8 h-8 text-accent" />
+            )}
           </div>
 
           {/* Title */}

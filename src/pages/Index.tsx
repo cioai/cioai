@@ -157,7 +157,7 @@ const Index = () => {
                 gradient="from-accent/10 to-accent/5"
               />
               <CategoryCard
-                name="Otras IAs"
+                name="IA"
                 slug="otras-ias"
                 count={4}
                 icon={Wand2}

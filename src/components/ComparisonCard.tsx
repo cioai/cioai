@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import soraIcon from "@/assets/sora-icon.png";
+import veoIcon from "@/assets/veo-icon.png";
+import runwayIcon from "@/assets/runway-icon.png";
 
 interface ComparisonCardProps {
   title: string;
@@ -15,6 +18,13 @@ interface ComparisonCardProps {
     logo?: string;
   };
 }
+
+const getToolIcon = (name: string): string => {
+  if (name.toLowerCase().includes("sora")) return soraIcon;
+  if (name.toLowerCase().includes("veo")) return veoIcon;
+  if (name.toLowerCase().includes("runway")) return runwayIcon;
+  return "";
+};
 
 export const ComparisonCard = ({
   title,
@@ -47,14 +57,22 @@ export const ComparisonCard = ({
         {/* Tools */}
         <div className="flex items-center justify-between mb-auto">
           <div className="flex-1 text-center">
-            <div className="w-20 h-20 mx-auto mb-3 rounded-2xl bg-primary/5 flex items-center justify-center font-bold text-2xl group-hover:scale-110 transition-transform duration-500">
-              {tool1.logo || tool1.name.slice(0, 2)}
+            <div className="w-20 h-20 mx-auto mb-3 rounded-2xl bg-primary/5 flex items-center justify-center font-bold text-2xl group-hover:scale-110 transition-transform duration-500 p-3">
+              {getToolIcon(tool1.name) ? (
+                <img src={getToolIcon(tool1.name)} alt={tool1.name} className="w-full h-full object-contain" />
+              ) : (
+                tool1.logo || tool1.name.slice(0, 2)
+              )}
             </div>
             <p className="font-semibold">{tool1.name}</p>
           </div>
           <div className="flex-1 text-center">
-            <div className="w-20 h-20 mx-auto mb-3 rounded-2xl bg-accent/5 flex items-center justify-center font-bold text-2xl group-hover:scale-110 transition-transform duration-500">
-              {tool2.logo || tool2.name.slice(0, 2)}
+            <div className="w-20 h-20 mx-auto mb-3 rounded-2xl bg-accent/5 flex items-center justify-center font-bold text-2xl group-hover:scale-110 transition-transform duration-500 p-3">
+              {getToolIcon(tool2.name) ? (
+                <img src={getToolIcon(tool2.name)} alt={tool2.name} className="w-full h-full object-contain" />
+              ) : (
+                tool2.logo || tool2.name.slice(0, 2)
+              )}
             </div>
             <p className="font-semibold">{tool2.name}</p>
           </div>
