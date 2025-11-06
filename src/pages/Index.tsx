@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { ArticleCard } from "@/components/ArticleCard";
@@ -8,47 +8,44 @@ import { Stats } from "@/components/Stats";
 import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
 import { AIChat } from "@/components/AIChat";
-import { supabase } from "@/integrations/supabase/client";
 import { Video, Sparkles, Wand2, BookOpen } from "lucide-react";
-
-interface Article {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  featured_image: string | null;
-  reading_time: number;
-  published_at: string;
-  category: {
-    name: string;
-    slug: string;
-  };
-}
 
 const Index = () => {
   const [chatOpen, setChatOpen] = useState(false);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      const { data, error } = await supabase
-        .from("articles")
-        .select(`
-          *,
-          category:categories(name, slug)
-        `)
-        .order("published_at", { ascending: false })
-        .limit(6);
-
-      if (!error && data) {
-        setArticles(data as any);
-      }
-      setLoading(false);
-    };
-
-    fetchArticles();
-  }, []);
+  // Mock articles for demo
+  const mockArticles = [
+    {
+      id: "1",
+      title: "Sora 2 - OpenAI | Todo lo Nuevo en 2025",
+      slug: "sora-2-openai-novedades-2025",
+      excerpt: "Descubre todas las novedades de Sora 2, la revolucionaria IA de generación de video de OpenAI que está transformando la creación de contenido en 2025.",
+      featured_image: null,
+      category: { name: "Sora 2", slug: "sora-2" },
+      reading_time: 8,
+      published_at: new Date().toISOString(),
+    },
+    {
+      id: "2",
+      title: "¿Cómo acceder gratis a Sora 2?",
+      slug: "como-acceder-gratis-sora-2",
+      excerpt: "Guía completa para acceder a Sora 2 sin pagar. Descubre las opciones gratuitas, limitaciones y requisitos para usar esta poderosa herramienta de IA.",
+      featured_image: null,
+      category: { name: "Sora 2", slug: "sora-2" },
+      reading_time: 6,
+      published_at: new Date().toISOString(),
+    },
+    {
+      id: "3",
+      title: "Sora 2 vs Veo 3.1",
+      slug: "sora-2-vs-veo-3-1-comparativa",
+      excerpt: "Comparativa exhaustiva entre las dos mejores IAs de generación de video. Descubre cuál se adapta mejor a tus necesidades creativas en 2025.",
+      featured_image: null,
+      category: { name: "Comparativas", slug: "comparativas" },
+      reading_time: 9,
+      published_at: new Date().toISOString(),
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -66,37 +63,25 @@ const Index = () => {
             <div className="h-px flex-1 bg-border" />
           </div>
 
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="aspect-video bg-secondary rounded-2xl mb-4" />
-                  <div className="h-4 bg-secondary rounded mb-2" />
-                  <div className="h-4 bg-secondary rounded w-2/3" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {articles.map((article, index) => (
-                <div
-                  key={article.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <ArticleCard
-                    title={article.title}
-                    excerpt={article.excerpt}
-                    slug={article.slug}
-                    featuredImage={article.featured_image || undefined}
-                    categoryName={article.category?.name || "General"}
-                    readingTime={article.reading_time}
-                    publishedAt={article.published_at}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {mockArticles.map((article, index) => (
+              <div
+                key={article.id}
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <ArticleCard
+                  title={article.title}
+                  excerpt={article.excerpt}
+                  slug={article.slug}
+                  featuredImage={article.featured_image || undefined}
+                  categoryName={article.category.name}
+                  readingTime={article.reading_time}
+                  publishedAt={article.published_at}
+                />
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* Comparisons Slider */}

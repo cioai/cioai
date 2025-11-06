@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, Sparkles, Sun, Moon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SearchDialog } from "@/components/SearchDialog";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +13,6 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,11 +64,9 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
 
         {/* Right Side Actions */}
         <div className="flex items-center gap-4">
-          {/* Search */}
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setSearchOpen(true)}
             className="hidden md:flex rounded-full"
           >
             <Search className="h-5 w-5" />
@@ -131,7 +127,6 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
             ))}
             <div className="pt-4 border-t">
               <Button
-                onClick={() => setSearchOpen(true)}
                 variant="outline"
                 className="w-full justify-start gap-2"
               >
@@ -142,8 +137,6 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
           </nav>
         </div>
       )}
-
-      <SearchDialog isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 };

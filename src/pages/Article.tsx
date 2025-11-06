@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AIChat } from "@/components/AIChat";
-import { TableOfContents } from "@/components/TableOfContents";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, Calendar, Share2, ChevronLeft, ChevronRight } from "lucide-react";
@@ -246,9 +245,6 @@ const Article = () => {
                   </Button>
                 </div>
               </div>
-
-              {/* Table of Contents Sidebar */}
-              <TableOfContents />
             </div>
           </div>
         </div>
