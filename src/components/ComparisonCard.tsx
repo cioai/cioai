@@ -93,7 +93,7 @@ export const ComparisonCard = ({
           <Button
             variant="ghost"
             size="sm"
-            className="group-hover:text-accent transition-colors"
+            className="text-foreground hover:text-accent-foreground hover:bg-accent transition-colors"
           >
             Ver Comparativa
             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
