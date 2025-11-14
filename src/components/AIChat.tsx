@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Send, Sparkles } from "lucide-react";
+import { X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,13 +21,20 @@ export const AIChat = ({ isOpen, onClose }: AIChatProps) => {
     {
       role: "assistant",
       content:
-        "¡Hola! Soy el asistente de CioAI. Puedo ayudarte a encontrar artículos, comparar herramientas de IA o responder cualquier pregunta sobre generación de vídeo con IA. ¿En qué puedo ayudarte?",
+        "👋 ¡Hola! Es un placer conocerte. Como asistente de CioAI, estoy aquí para ayudarte con cualquier cosa relacionada con la generación de vídeo con IA.\n\n¿En qué puedo ayudarte hoy?\n\nPor ejemplo, podría:\n\n🔍 **Comparar herramientas** como Sora 2, Veo 3.1 o Runway Gen-3.\n\n📚 **Explicarte cómo funcionan** algunas de estas herramientas.\n\n💰 **Darte información sobre su acceso o precios.**\n\n📖 **Sugerirte artículos o tutoriales** específicos de nuestro sitio.\n\n¡Solo dime lo que necesitas!",
     },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  const quickSuggestions = [
+    { emoji: "⚖️", text: "Comparar Sora 2 vs Veo 3.1", query: "Compara Sora 2 y Veo 3.1 en detalle" },
+    { emoji: "📚", text: "Tutorial de Sora 2", query: "¿Tienes un tutorial completo de Sora 2?" },
+    { emoji: "💰", text: "Precios y acceso", query: "¿Cuánto cuesta Sora 2 y cómo puedo acceder?" },
+    { emoji: "🎬", text: "Mejores herramientas", query: "¿Cuál es la mejor herramienta de IA para crear videos?" },
+  ];
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -111,94 +118,135 @@ export const AIChat = ({ isOpen, onClose }: AIChatProps) => {
     } catch (error) {
       console.error("Error:", error);
       toast({
-        title: "Error",
+        title: "❌ Error",
         description: "No se pudo conectar con el asistente. Intenta de nuevo.",
         variant: "destructive",
       });
-      setMessages((prev) => prev.slice(0, -1)); // Remove empty assistant message
+      // Remove the empty assistant message on error
+      setMessages((prev) => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (!isOpen) return null;
+  const handleQuickSuggestion = (query: string) => {
+    setInput(query);
+  };
 
   return (
-    <div className="fixed right-0 top-0 bottom-0 w-full md:w-[400px] bg-background border-l z-50 flex flex-col animate-slide-in">
+    <div
+      className={cn(
+        "fixed top-0 right-0 h-screen w-96 bg-background border-l border-border shadow-2xl transition-transform duration-300 ease-in-out z-50",
+        isOpen ? "translate-x-0" : "translate-x-full"
+      )}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b">
-        <div>
-          <h3 className="font-semibold flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-accent" />
-            Asistente CioAI
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            Pregunta sobre cualquier artículo
-          </p>
+      <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10">
+        <div className="flex items-center gap-3">
+          <div className="text-3xl">✨</div>
+          <div>
+            <h3 className="font-bold text-lg">Asistente CioAI</h3>
+            <p className="text-xs text-muted-foreground">🤖 Pregunta sobre cualquier artículo</p>
+          </div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClose}
-          className="rounded-full"
-        >
-          <X className="h-5 w-5" />
+        <Button variant="ghost" size="icon" onClick={onClose}>
+          <X className="w-5 h-5" />
         </Button>
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-6" ref={scrollRef}>
+      <ScrollArea className="flex-1 p-4" ref={scrollRef as any}>
         <div className="space-y-4">
-          {messages.map((message, i) => (
+          {messages.map((message, index) => (
             <div
-              key={i}
+              key={index}
               className={cn(
                 "flex gap-3 animate-fade-in",
                 message.role === "user" ? "justify-end" : "justify-start"
               )}
             >
               {message.role === "assistant" && (
-                <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="h-4 w-4 text-accent" />
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary via-accent to-secondary flex items-center justify-center text-2xl shadow-lg">
+                  🤖
                 </div>
               )}
               <div
                 className={cn(
-                  "rounded-2xl px-4 py-3 max-w-[80%]",
+                  "max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-md",
                   message.role === "user"
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-secondary"
+                    ? "bg-gradient-to-br from-primary to-primary/80 text-primary-foreground"
+                    : "bg-card border border-border"
                 )}
               >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                <div className="whitespace-pre-wrap prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-strong:font-semibold">
+                  {message.content}
+                </div>
               </div>
+              {message.role === "user" && (
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-accent to-secondary flex items-center justify-center text-2xl shadow-lg">
+                  👤
+                </div>
+              )}
             </div>
           ))}
+          {isLoading && (
+            <div className="flex gap-3 animate-fade-in">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary via-accent to-secondary flex items-center justify-center text-2xl shadow-lg animate-pulse">
+                🤖
+              </div>
+              <div className="bg-card border border-border rounded-2xl px-4 py-3 text-sm shadow-md">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: "0.1s" }} />
+                  <div className="w-2.5 h-2.5 rounded-full bg-secondary animate-bounce" style={{ animationDelay: "0.2s" }} />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea>
 
+      {/* Quick Suggestions */}
+      {messages.length === 1 && !isLoading && (
+        <div className="px-4 pb-4 border-t border-border">
+          <p className="text-xs font-semibold text-muted-foreground mb-3 mt-4">💡 Sugerencias rápidas:</p>
+          <div className="grid grid-cols-2 gap-2">
+            {quickSuggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => handleQuickSuggestion(suggestion.query)}
+                className="p-3 rounded-xl bg-gradient-to-br from-secondary/50 to-accent/20 border border-border hover:shadow-lg transition-all text-left group"
+              >
+                <div className="text-2xl mb-1 group-hover:scale-110 transition-transform">{suggestion.emoji}</div>
+                <p className="text-xs font-medium leading-tight">{suggestion.text}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Input */}
-      <div className="p-6 border-t">
+      <div className="p-4 border-t border-border bg-gradient-to-r from-secondary/20 to-accent/10">
         <div className="flex gap-2">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Pregunta sobre tutoriales, IAs..."
-            className="flex-1 rounded-full"
+            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
+            placeholder="💬 Pregunta sobre tutoriales, IAs..."
             disabled={isLoading}
+            className="flex-1 border-2 focus:border-primary transition-colors"
           />
-          <Button
-            onClick={handleSend}
+          <Button 
+            onClick={handleSend} 
+            disabled={isLoading || !input.trim()} 
             size="icon"
-            className="rounded-full bg-accent hover:bg-accent/90"
-            disabled={isLoading}
+            className="shadow-lg hover:scale-105 transition-transform"
           >
-            <Send className="h-4 w-4" />
+            <Send className="w-4 h-4" />
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          Asistente potenciado por IA
+        <p className="text-[10px] text-muted-foreground mt-2 text-center">
+          🔒 Asistente potenciado por IA
         </p>
       </div>
     </div>
