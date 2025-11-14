@@ -186,7 +186,19 @@ const Article = () => {
 
           {/* Main Content */}
           <div 
-            className="prose prose-lg dark:prose-invert max-w-none"
+            className="prose prose-lg dark:prose-invert max-w-none
+              prose-headings:font-bold prose-headings:tracking-tight
+              prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-12 prose-h2:bg-gradient-to-r prose-h2:from-primary prose-h2:to-accent prose-h2:bg-clip-text prose-h2:text-transparent
+              prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-8
+              prose-p:leading-relaxed prose-p:text-muted-foreground
+              prose-ul:my-6 prose-ul:space-y-2
+              prose-li:text-muted-foreground
+              prose-strong:text-foreground prose-strong:font-semibold
+              prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+              prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
+              prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic
+              prose-code:bg-secondary/50 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm
+              prose-pre:bg-secondary/20 prose-pre:border prose-pre:border-border prose-pre:rounded-xl"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
 
