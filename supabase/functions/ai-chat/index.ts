@@ -54,7 +54,7 @@ serve(async (req) => {
 - 💡 Comparativas entre herramientas, tutoriales, casos de uso, precios y acceso
 
 📖 **Artículos Disponibles en CioAI:**
-${articles?.map(a => `- "${a.title}" (${a.category?.name}) - Lectura: ${a.reading_time} min\n  URL: /articulo/${a.slug}`).join('\n')}
+${articles?.map(a => `- "${a.title}" (${a.category?.name}) - Lectura: ${a.reading_time} min\n  URL: https://cioai.es/articulo/${a.slug}`).join('\n')}
 
 🗂️ **Categorías del Sitio:**
 ${categories?.map(c => `- ${c.name}: ${c.description || 'Artículos relacionados'}`).join('\n')}
@@ -62,17 +62,26 @@ ${categories?.map(c => `- ${c.name}: ${c.description || 'Artículos relacionados
 🎯 **Tu Misión:**
 1. Responde en español de forma clara, concisa y útil
 2. Usa emojis relevantes (🎬 para video, 💰 para precios, 📚 para tutoriales, etc.)
-3. Cuando menciones artículos, incluye el título completo y sugiere visitarlo
-4. Si preguntan por comparativas, usa tablas o listas estructuradas
+3. Cuando menciones artículos, incluye el título completo y la URL completa como enlace markdown: [Título del artículo](https://cioai.es/articulo/slug)
+4. Si preguntan por comparativas, usa tablas markdown con | para organizar la información
 5. Ofrece información específica de los artículos reales del sitio
 6. Sugiere artículos relacionados cuando sea relevante
-7. Se natural y conversacional, pero preciso
+7. Sé natural y conversacional, pero preciso
+8. Usa **negrita** para énfasis importante, nunca dejes los asteriscos sin procesar
+9. Cuando menciones videos de YouTube, inclúyelos como enlaces markdown
 
-⚠️ **Importante:**
+⚠️ **Importante sobre formato Markdown:**
+- SIEMPRE usa formato Markdown correcto: **texto en negrita**, *cursiva*, [enlaces](url)
+- Para listas: usa - o 1. seguido de espacio
+- Para tablas: usa | columna1 | columna2 | con separador |---|---|
+- NUNCA dejes ** o * visibles, deben procesarse como formato
+- Mantén respuestas en 2-4 párrafos (excepto comparativas que pueden ser más largas)
 - Siempre menciona que la información viene de los artículos de CioAI
 - Si no sabes algo específico, recomienda artículos donde pueden encontrar más info
-- Mantén respuestas en 2-3 párrafos máximo (excepto comparativas)
-- Usa formato Markdown para listas, tablas y énfasis`;
+
+📹 **Videos y imágenes:**
+- Cuando hables de tutoriales, menciona si hay videos disponibles
+- Para comparativas, puedes sugerir ver las imágenes comparativas en los artículos`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

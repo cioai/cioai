@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface AIChatProps {
   isOpen: boolean;
@@ -21,7 +23,7 @@ export const AIChat = ({ isOpen, onClose }: AIChatProps) => {
     {
       role: "assistant",
       content:
-        "👋 ¡Hola! Es un placer conocerte. Como asistente de CioAI, estoy aquí para ayudarte con cualquier cosa relacionada con la generación de vídeo con IA.\n\n¿En qué puedo ayudarte hoy?\n\nPor ejemplo, podría:\n\n🔍 **Comparar herramientas** como Sora 2, Veo 3.1 o Runway Gen-3.\n\n📚 **Explicarte cómo funcionan** algunas de estas herramientas.\n\n💰 **Darte información sobre su acceso o precios.**\n\n📖 **Sugerirte artículos o tutoriales** específicos de nuestro sitio.\n\n¡Solo dime lo que necesitas!",
+        "👋 ¡Hola! Es un placer conocerte. Como asistente de CioAI, estoy aquí para ayudarte con cualquier cosa relacionada con la generación de vídeo con IA.\n\n¿En qué puedo ayudarte hoy?\n\nPor ejemplo, podría:\n\n🔍 **Comparar herramientas** como Sora 2, Veo 3.1 o Runway Gen-3\n\n📚 **Explicarte cómo funcionan** estas herramientas\n\n💰 **Darte información** sobre acceso y precios\n\n📖 **Sugerirte artículos** específicos de nuestro sitio\n\n¡Solo dime lo que necesitas!",
     },
   ]);
   const [input, setInput] = useState("");
@@ -136,27 +138,32 @@ export const AIChat = ({ isOpen, onClose }: AIChatProps) => {
   return (
     <div
       className={cn(
-        "fixed top-0 right-0 h-screen w-96 bg-background border-l border-border shadow-2xl transition-transform duration-300 ease-in-out z-50",
+        "fixed top-0 right-0 h-screen w-[420px] bg-background border-l border-border/50 shadow-xl transition-transform duration-300 ease-in-out z-50 flex flex-col",
         isOpen ? "translate-x-0" : "translate-x-full"
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border/50 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="text-3xl">✨</div>
+          <div className="text-2xl">✨</div>
           <div>
-            <h3 className="font-bold text-lg">Asistente CioAI</h3>
-            <p className="text-xs text-muted-foreground">🤖 Pregunta sobre cualquier artículo</p>
+            <h3 className="font-semibold text-base">Asistente CioAI</h3>
+            <p className="text-xs text-muted-foreground">Pregunta lo que necesites</p>
           </div>
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <X className="w-5 h-5" />
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onClose}
+          className="rounded-full h-8 w-8 hover:bg-secondary/50"
+        >
+          <X className="w-4 h-4" />
         </Button>
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4" ref={scrollRef as any}>
-        <div className="space-y-4">
+      <ScrollArea className="flex-1 px-6 py-4" ref={scrollRef as any}>
+        <div className="space-y-6">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -166,24 +173,45 @@ export const AIChat = ({ isOpen, onClose }: AIChatProps) => {
               )}
             >
               {message.role === "assistant" && (
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary via-accent to-secondary flex items-center justify-center text-2xl shadow-lg">
-                  🤖
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-lg shadow-sm">
+                  ✨
                 </div>
               )}
               <div
                 className={cn(
-                  "max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-md",
+                  "max-w-[85%] rounded-3xl px-4 py-3 text-[13px] leading-relaxed",
                   message.role === "user"
-                    ? "bg-gradient-to-br from-primary to-primary/80 text-primary-foreground"
-                    : "bg-card border border-border"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-secondary/30 text-foreground"
                 )}
               >
-                <div className="whitespace-pre-wrap prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-strong:font-semibold">
-                  {message.content}
-                </div>
+                {message.role === "assistant" ? (
+                  <div className="prose prose-sm dark:prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_p]:my-2 [&_strong]:font-semibold [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-0.5">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        a: ({ ...props }) => (
+                          <a
+                            {...props}
+                            className="text-primary hover:underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          />
+                        ),
+                        img: ({ ...props }) => (
+                          <img {...props} className="rounded-lg my-2 max-w-full" />
+                        ),
+                      }}
+                    >
+                      {message.content}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <div className="whitespace-pre-wrap">{message.content}</div>
+                )}
               </div>
               {message.role === "user" && (
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-accent to-secondary flex items-center justify-center text-2xl shadow-lg">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-accent to-accent/70 flex items-center justify-center text-lg shadow-sm">
                   👤
                 </div>
               )}
@@ -191,14 +219,14 @@ export const AIChat = ({ isOpen, onClose }: AIChatProps) => {
           ))}
           {isLoading && (
             <div className="flex gap-3 animate-fade-in">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary via-accent to-secondary flex items-center justify-center text-2xl shadow-lg animate-pulse">
-                🤖
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-lg shadow-sm">
+                ✨
               </div>
-              <div className="bg-card border border-border rounded-2xl px-4 py-3 text-sm shadow-md">
+              <div className="bg-secondary/30 rounded-3xl px-4 py-3">
                 <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: "0.1s" }} />
-                  <div className="w-2.5 h-2.5 rounded-full bg-secondary animate-bounce" style={{ animationDelay: "0.2s" }} />
+                  <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" />
+                  <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "0.1s" }} />
+                  <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "0.2s" }} />
                 </div>
               </div>
             </div>
@@ -208,17 +236,17 @@ export const AIChat = ({ isOpen, onClose }: AIChatProps) => {
 
       {/* Quick Suggestions */}
       {messages.length === 1 && !isLoading && (
-        <div className="px-4 pb-4 border-t border-border">
-          <p className="text-xs font-semibold text-muted-foreground mb-3 mt-4">💡 Sugerencias rápidas:</p>
+        <div className="px-6 pb-4 border-t border-border/50 shrink-0">
+          <p className="text-xs font-medium text-muted-foreground mb-3 mt-4">💡 Sugerencias:</p>
           <div className="grid grid-cols-2 gap-2">
             {quickSuggestions.map((suggestion, index) => (
               <button
                 key={index}
                 onClick={() => handleQuickSuggestion(suggestion.query)}
-                className="p-3 rounded-xl bg-gradient-to-br from-secondary/50 to-accent/20 border border-border hover:shadow-lg transition-all text-left group"
+                className="p-3 rounded-2xl bg-secondary/30 hover:bg-secondary/50 border border-border/30 hover:border-border/60 transition-all text-left group"
               >
-                <div className="text-2xl mb-1 group-hover:scale-110 transition-transform">{suggestion.emoji}</div>
-                <p className="text-xs font-medium leading-tight">{suggestion.text}</p>
+                <div className="text-xl mb-1 group-hover:scale-105 transition-transform">{suggestion.emoji}</div>
+                <p className="text-[11px] font-medium leading-tight text-foreground/90">{suggestion.text}</p>
               </button>
             ))}
           </div>
@@ -226,27 +254,27 @@ export const AIChat = ({ isOpen, onClose }: AIChatProps) => {
       )}
 
       {/* Input */}
-      <div className="p-4 border-t border-border bg-gradient-to-r from-secondary/20 to-accent/10">
-        <div className="flex gap-2">
+      <div className="px-6 py-4 border-t border-border/50 shrink-0">
+        <div className="flex gap-2 items-end">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
-            placeholder="💬 Pregunta sobre tutoriales, IAs..."
+            placeholder="Escribe tu pregunta..."
             disabled={isLoading}
-            className="flex-1 border-2 focus:border-primary transition-colors"
+            className="flex-1 rounded-full border-border/50 bg-secondary/30 focus-visible:ring-1 focus-visible:ring-primary px-4 text-sm"
           />
           <Button 
             onClick={handleSend} 
             disabled={isLoading || !input.trim()} 
             size="icon"
-            className="shadow-lg hover:scale-105 transition-transform"
+            className="rounded-full h-10 w-10 shrink-0 shadow-sm hover:shadow-md transition-all disabled:opacity-50"
           >
             <Send className="w-4 h-4" />
           </Button>
         </div>
-        <p className="text-[10px] text-muted-foreground mt-2 text-center">
-          🔒 Asistente potenciado por IA
+        <p className="text-[10px] text-muted-foreground/60 mt-2 text-center">
+          Asistente potenciado por IA
         </p>
       </div>
     </div>
