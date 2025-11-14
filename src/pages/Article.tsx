@@ -5,10 +5,11 @@ import { Footer } from "@/components/Footer";
 import { AIChat } from "@/components/AIChat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Calendar, Share2, ChevronLeft, ChevronRight, Star, CheckCircle, AlertCircle } from "lucide-react";
+import { Clock, Calendar, Share2, ChevronLeft, ChevronRight, Star, CheckCircle, AlertCircle, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RichContent } from "@/components/article/RichContent";
 
 interface Article {
   id: string;
@@ -162,89 +163,102 @@ const Article = () => {
         {/* Article Content */}
         <article className="container mx-auto px-4 py-12 max-w-4xl">
           {/* TL;DR Section */}
-          <div className="mb-12 p-6 rounded-lg bg-accent/10 border-l-4 border-primary">
-            <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5" />
+          <div className="mb-12 p-8 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 border-2 border-primary/20 shadow-xl">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+              <Sparkles className="w-6 h-6 text-primary" />
               TL;DR - Lo Esencial
             </h2>
-            <p className="text-muted-foreground leading-relaxed">{article.excerpt}</p>
+            <p className="text-lg leading-relaxed">{article.excerpt}</p>
           </div>
 
           {/* Intro de Hatim */}
-          <div className="mb-12 flex items-start gap-4 p-6 rounded-lg bg-secondary/10">
-            <div className="flex-shrink-0 w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-2xl font-bold">
+          <div className="mb-12 flex items-start gap-6 p-8 rounded-2xl bg-gradient-to-br from-secondary/20 to-accent/10 border border-border shadow-lg">
+            <div className="flex-shrink-0 w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-3xl font-bold text-white shadow-xl">
               H
             </div>
-            <div>
-              <p className="text-sm font-semibold mb-2">Hey, soy Hatim 👋</p>
-              <p className="text-muted-foreground leading-relaxed">
+            <div className="flex-1">
+              <p className="text-base font-bold mb-3 text-primary">Hey, soy Hatim 👋</p>
+              <p className="text-lg leading-relaxed">
                 He pasado semanas probando esto para que no tengas que hacerlo tú. 
-                Aquí te cuento todo lo que necesitas saber sin rodeos.
+                Aquí te cuento todo lo que necesitas saber sin rodeos. Prepárate para 
+                descubrir si esto realmente vale la pena.
               </p>
             </div>
           </div>
 
           {/* Main Content */}
-          <div 
-            className="prose prose-lg dark:prose-invert max-w-none
-              prose-headings:font-bold prose-headings:tracking-tight
-              prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-12 prose-h2:bg-gradient-to-r prose-h2:from-primary prose-h2:to-accent prose-h2:bg-clip-text prose-h2:text-transparent
-              prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-8
-              prose-p:leading-relaxed prose-p:text-muted-foreground
-              prose-ul:my-6 prose-ul:space-y-2
-              prose-li:text-muted-foreground
-              prose-strong:text-foreground prose-strong:font-semibold
-              prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-              prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
-              prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic
-              prose-code:bg-secondary/50 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm
-              prose-pre:bg-secondary/20 prose-pre:border prose-pre:border-border prose-pre:rounded-xl"
-            dangerouslySetInnerHTML={{ __html: article.content }}
-          />
+          <RichContent content={article.content} />
 
           {/* Veredicto Final */}
-          <div className="my-12 p-8 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 border border-border">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Star className="w-6 h-6 fill-primary text-primary" />
+          <div className="my-16 p-10 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 border-2 border-primary/30 shadow-2xl">
+            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+              <Star className="w-8 h-8 fill-primary text-primary" />
               Veredicto de Hatim
             </h2>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-3 mb-6">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star 
                   key={star} 
                   className={cn(
-                    "w-6 h-6",
+                    "w-8 h-8 transition-transform hover:scale-110",
                     star <= 4 ? "fill-primary text-primary" : "text-muted-foreground"
                   )} 
                 />
               ))}
-              <span className="ml-2 text-xl font-bold">8/10</span>
+              <span className="ml-3 text-3xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">8/10</span>
             </div>
-            <p className="text-lg leading-relaxed mb-6">
+            <p className="text-xl leading-relaxed mb-8">
               Una herramienta potente que está cambiando las reglas del juego. 
-              Tiene sus limitaciones, pero el potencial es innegable.
+              Tiene sus limitaciones, pero el potencial es innegable. Si creas contenido 
+              regularmente, se paga solo en la primera semana.
             </p>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <h3 className="font-semibold mb-2 flex items-center gap-2 text-green-600 dark:text-green-400">
-                  <CheckCircle className="w-5 h-5" />
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="p-6 rounded-xl bg-green-500/10 border border-green-500/30">
+                <h3 className="font-bold mb-4 flex items-center gap-3 text-green-600 dark:text-green-400 text-lg">
+                  <CheckCircle className="w-6 h-6" />
                   Lo Mejor
                 </h3>
-                <ul className="space-y-1 text-sm text-muted-foreground">
-                  <li>• Calidad profesional</li>
-                  <li>• Fácil de usar</li>
-                  <li>• Resultados rápidos</li>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">✓</span>
+                    <span>Calidad profesional increíble</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">✓</span>
+                    <span>Fácil de usar, sin curva de aprendizaje</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">✓</span>
+                    <span>Resultados rápidos (5-10 min)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">✓</span>
+                    <span>Precio competitivo vs alternativas</span>
+                  </li>
                 </ul>
               </div>
-              <div>
-                <h3 className="font-semibold mb-2 flex items-center gap-2 text-red-600 dark:text-red-400">
-                  <AlertCircle className="w-5 h-5" />
+              <div className="p-6 rounded-xl bg-red-500/10 border border-red-500/30">
+                <h3 className="font-bold mb-4 flex items-center gap-3 text-red-600 dark:text-red-400 text-lg">
+                  <AlertCircle className="w-6 h-6" />
                   A Mejorar
                 </h3>
-                <ul className="space-y-1 text-sm text-muted-foreground">
-                  <li>• Precio elevado</li>
-                  <li>• Límites de uso</li>
-                  <li>• Curva de aprendizaje</li>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-1">×</span>
+                    <span>Rostros humanos pueden tener glitches</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-1">×</span>
+                    <span>No genera texto legible todavía</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-1">×</span>
+                    <span>Física no siempre es perfecta</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-1">×</span>
+                    <span>Requiere suscripción de $20/mes</span>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -252,10 +266,11 @@ const Article = () => {
 
           {/* CTAs */}
           <div className="my-12 flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="flex-1" onClick={() => setChatOpen(true)}>
+            <Button size="lg" className="flex-1 h-14 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all" onClick={() => setChatOpen(true)}>
+              <Sparkles className="w-5 h-5 mr-2" />
               Pregunta a Nuestra IA
             </Button>
-            <Button size="lg" variant="outline" className="flex-1" asChild>
+            <Button size="lg" variant="outline" className="flex-1 h-14 text-lg font-semibold border-2 hover:bg-accent/20" asChild>
               <Link to="/articulos">Ver Más Artículos</Link>
             </Button>
           </div>
