@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Search, Sparkles, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { SearchDialog } from "@/components/SearchDialog";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
@@ -12,6 +13,7 @@ interface HeaderProps {
 export const Header = ({ onOpenChat }: HeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,8 +26,8 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
   const navItems = [
     { name: "Inicio", href: "/" },
     { name: "Artículos", href: "/articulos" },
-    { name: "Tutoriales", href: "/categoria/tutoriales" },
-    { name: "Comparativas", href: "/categoria/comparativas" },
+    { name: "Tutoriales", href: "/tutoriales" },
+    { name: "Comparativas", href: "/comparativas" },
   ];
 
   return (
@@ -58,6 +60,7 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
             variant="ghost"
             size="icon"
             className="hidden md:flex rounded-full"
+            onClick={() => setSearchOpen(true)}
           >
             <Search className="h-5 w-5" />
           </Button>
@@ -105,6 +108,10 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
               <Button
                 variant="outline"
                 className="w-full justify-start gap-2"
+                onClick={() => {
+                  setSearchOpen(true);
+                  setMobileMenuOpen(false);
+                }}
               >
                 <Search className="h-4 w-4" />
                 Buscar artículos...
@@ -113,6 +120,7 @@ export const Header = ({ onOpenChat }: HeaderProps) => {
           </nav>
         </div>
       )}
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 };
